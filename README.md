@@ -2,44 +2,23 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-## Description
-Proyecto de compras con Nest y PostgreSQL
+# Teslo API
 
-## Installation
-
-```bash
-$ npm install
-$ yarn 
+1. Clonar proyecto
+2. Instalar dependencias con cualquiera de los siguientes comandos: 
+```
+yarn install
+npm i
+```
+3. Clonar el archivo```.env.template``` y renombrarlo a```.env```
+4. Cambiar las variables de entorno
+5. Levantar Base de datos
+```
+docker-compose up -d
 ```
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-$ yarn start
-
-# watch mode
-$ npm run start:dev
-$ yarn start:dev
-
-# production mode
-$ npm run start:prod
-$ yarn start:prod
+6. Levantar base de datos en desarrollo:
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-$ yarn test
-
-# e2e tests
-$ npm run test:e2e
-$ yarn test:e2e
-
-# test coverage
-$ npm run test:cov
-$ yarn run test:cov
+yarn start:dev
+npm run start:dev
 ```
