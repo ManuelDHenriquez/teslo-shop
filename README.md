@@ -17,7 +17,12 @@ npm i
 docker-compose up -d
 ```
 
-6. Levantar base de datos en desarrollo:
+6. Ejecutar SEED
+```
+http://localhost:3000/api/seed
+```
+
+7. Levantar base de datos en desarrollo con uno de los dos comandos:
 ```
 yarn start:dev
 npm run start:dev

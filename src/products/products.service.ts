@@ -1,4 +1,5 @@
 import {
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -116,7 +117,10 @@ export class ProductsService {
           this.productImageRepository.create({ url: image }),
         );
       } else {
-        //
+        // update product
+        product.images = await this.productImageRepository.findBy({
+          product: { id },
+        });
       }
 
       await queryRunner.manager.save(product); // save product
@@ -124,7 +128,7 @@ export class ProductsService {
       await queryRunner.commitTransaction();
       await queryRunner.release();
 
-      return this.findOnePlain( id );
+      return this.findOnePlain(id);
 
       // await this.productRepository.save(product);
     } catch (error) {
@@ -139,6 +143,10 @@ export class ProductsService {
   async remove(id: string) {
     const product = await this.findOne(id);
     await this.productRepository.remove(product);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'All products deleted',
+    };
   }
 
   private handleDBExceptions(error: any) {
@@ -149,5 +157,18 @@ export class ProductsService {
     throw new InternalServerErrorException(
       'Unexpected error, check server logs',
     );
+  }
+
+  async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder('product');
+
+    try {
+      return await query
+        .delete()
+        .where( {} )
+        .execute();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 }
