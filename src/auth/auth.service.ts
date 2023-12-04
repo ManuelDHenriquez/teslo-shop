@@ -1,10 +1,17 @@
-import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { User } from './entities/user.entity';
 import { CreateUserDto, LoginUserDto } from './dto';
+import { JwtPayload } from './strategies/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -12,49 +19,61 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+
+    private readonly jwtServce: JwtService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-
     try {
-
       const { password, ...userData } = createUserDto;
 
-      const user = this.userRepository.create( {
+      const user = this.userRepository.create({
         ...userData,
-        password: bcrypt.hashSync(password, 10)
-      } );
-      
+        password: bcrypt.hashSync(password, 10),
+      });
+
       await this.userRepository.save(user);
 
       //ToDo: Retornar el token de autenticación
 
-      return user;
+      return {
+        ...user,
+        token: this.getJwtToken({ id: user.id  }),
+      };
     } catch (error) {
       this.handleDBExceptions(error);
     }
   }
 
   async login(loginUserDto: LoginUserDto) {
-
     const { email, password } = loginUserDto;
 
     const user = await this.userRepository.findOne({
-      where: {  email  },
-      select: { email: true, password: true}
+      where: { email },
+      select: { id: true, email: true, password: true },
     });
 
-    if ( !user ) {
+    console.log(user);
+    
+
+    if (!user) {
       throw new UnauthorizedException(`Invalid credentials (email)`);
     }
-
-    if ( !bcrypt.compareSync(password, user.password) ) {
+    console.log('prueba');
+    
+    if (!bcrypt.compareSync(password, user.password)) {
       throw new UnauthorizedException(`Invalid credentials (password)`);
     }
 
-    return user;
-    // ToDo: Retornar el token de autenticación
+    console.log('prueba');
+    console.log(user);
+    
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
+    }
+    
   }
 
   private handleDBExceptions(error: any): never {
@@ -66,5 +85,9 @@ export class AuthService {
       'Unexpected error, check server logs',
     );
   }
-  
+
+  private getJwtToken(paylodad: JwtPayload) {
+    const token = this.jwtServce.sign(paylodad);
+    return token;
+  }
 }
