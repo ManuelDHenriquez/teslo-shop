@@ -52,21 +52,16 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { email },
       select: { id: true, email: true, password: true },
-    });
-
-    console.log(user);
-    
+    });    
 
     if (!user) {
       throw new UnauthorizedException(`Invalid credentials (email)`);
     }
-    console.log('prueba');
     
     if (!bcrypt.compareSync(password, user.password)) {
       throw new UnauthorizedException(`Invalid credentials (password)`);
     }
-
-    console.log('prueba');
+    
     console.log(user);
     
     return {
