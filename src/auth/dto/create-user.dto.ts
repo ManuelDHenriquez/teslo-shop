@@ -1,4 +1,5 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { Type } from '@angular/core';
+import { IsArray, IsEmail, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -18,4 +19,8 @@ export class CreateUserDto {
   @IsString()
   @MinLength(1)
   fullName: string;
+
+  @IsOptional()
+  @IsArray()
+  roles: string[];
 }
