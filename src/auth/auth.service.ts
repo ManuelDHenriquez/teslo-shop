@@ -43,6 +43,14 @@ export class AuthService {
     }
   }
 
+  async checkAuthStatus( user: User ) {
+
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
+    };
+  }
+
   async login(loginUserDto: LoginUserDto) {
     const { email, password } = loginUserDto;
 
@@ -59,7 +67,7 @@ export class AuthService {
       throw new UnauthorizedException(`Invalid credentials (password)`);
     }
     
-    console.log(user);
+    // console.log(user);
     
     return {
       //...user,
