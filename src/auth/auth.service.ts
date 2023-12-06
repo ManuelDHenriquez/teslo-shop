@@ -62,7 +62,7 @@ export class AuthService {
     console.log(user);
     
     return {
-      ...user,
+      //...user,
       token: this.getJwtToken({ id: user.id }),
     }
     
