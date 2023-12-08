@@ -1,4 +1,3 @@
-import { Type } from '@angular/core';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsEmail, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
